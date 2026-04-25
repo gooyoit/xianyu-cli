@@ -1,0 +1,56 @@
+{
+  "data": {
+    "resultList": [
+      {
+        "data": {
+          "item": {
+            "main": {
+              "targetUrl": "fleamarket://item?id=123456&foo=bar",
+              "clickParam": {
+                "args": {
+                  "publishTime": "1714392000000",
+                  "item_id": "123456"
+                }
+              },
+              "exContent": {
+                "title": "MacBook Pro 14",
+                "price": [
+                  { "text": "当前价" },
+                  { "text": "¥8999" }
+                ],
+                "area": "上海",
+                "userNickName": "Alice",
+                "picUrl": "//img.alicdn.com/example.jpg"
+              }
+            }
+          }
+        }
+      },
+      {
+        "data": {
+          "item": {
+            "main": {
+              "targetUrl": "fleamarket://item?id=654321",
+              "clickParam": {
+                "args": {
+                  "publishTime": "1714478400000",
+                  "item_id": "654321"
+                }
+              },
+              "exContent": {
+                "title": "显卡 RTX 4080",
+                "price": [
+                  { "text": "当前价" },
+                  { "text": "¥1.2万" }
+                ],
+                "area": "杭州",
+                "userNickName": "Bob",
+                "picUrl": "https://img.alicdn.com/example2.jpg"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
