@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "A CLI tool for searching Xianyu listings with Playwright."
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
+license = { text = "LicenseRef-Xianyu-CLI-NonCommercial" }
 authors = [
   { name = "OpenAI Codex" }
 ]
@@ -16,7 +16,7 @@ keywords = ["xianyu", "goofish", "cli", "playwright"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",
-  "License :: OSI Approved :: MIT License",
+  "License :: Other/Proprietary License",
   "Programming Language :: Python :: 3",
   "Topic :: Utilities"
 ]

@@ -4,6 +4,16 @@ English | [中文](./README.zh-CN.md)
 
 A CLI for Xianyu (闲鱼 / Goofish) — search listings and capture raw search responses with Playwright.
 
+## Disclaimer
+
+This project is created and shared purely for personal interest, learning, and technical research.
+
+- It must not be used for commercial purposes, profit-making activities, large-scale scraping, or any unlawful use.
+- Any use of this project is at the user's own risk.
+- The user is solely responsible for any direct or indirect consequences arising from the use of this project.
+- The project author and contributors assume no responsibility or liability for any loss, damage, legal risk, account restriction, or other consequence caused by the use or misuse of this project.
+- Technical discussion, learning, and collaborative research are welcome.
+
 ## Features
 
 - 🔐 **Login** — browser-assisted login, saved session reuse, login status check, logout
