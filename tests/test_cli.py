@@ -150,9 +150,11 @@ def test_status_outputs_saved_state_summary(tmp_path, capsys: pytest.CaptureFixt
 
     code = main(["status", "--storage-state", str(state_file)])
     assert code == 0
-    output = json.loads(capsys.readouterr().out)
-    assert output["logged_in"] is True
-    assert output["goofish_cookie_count"] == 1
+    output = capsys.readouterr().out
+    assert "ok: true" in output
+    assert "schema_version: '1'" in output
+    assert "  logged_in: true" in output
+    assert "  goofish_cookie_count: 1" in output
 
 
 def test_status_outputs_not_logged_in_for_non_auth_cookie(
@@ -172,6 +174,24 @@ def test_status_outputs_not_logged_in_for_non_auth_cookie(
     )
 
     code = main(["status", "--storage-state", str(state_file)])
-    assert code == 0
-    output = json.loads(capsys.readouterr().out)
-    assert output["logged_in"] is False
+    assert code == 1
+    output = capsys.readouterr().out
+    assert "ok: false" in output
+    assert "  logged_in: false" in output
+    assert "  code: not_authenticated" in output
+    assert "please re-login with: xianyu login" in output
+
+
+def test_status_outputs_not_logged_in_for_missing_state(
+    tmp_path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    state_file = tmp_path / "missing.json"
+
+    code = main(["status", "--storage-state", str(state_file)])
+    assert code == 1
+    output = capsys.readouterr().out
+    assert "ok: false" in output
+    assert f"  state_path: '{state_file}'" in output
+    assert "  exists: false" in output
+    assert "  code: not_authenticated" in output

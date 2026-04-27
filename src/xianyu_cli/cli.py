@@ -165,8 +165,40 @@ async def run_login(args: argparse.Namespace) -> int:
 
 def run_status(args: argparse.Namespace) -> int:
     state = inspect_auth_state(args.storage_state)
-    print(json.dumps(state.to_dict(), ensure_ascii=False, indent=2))
-    return 0
+    print(_format_status_output(state.to_dict()))
+    return 0 if state.logged_in else 1
+
+
+def _format_status_output(state: dict[str, object]) -> str:
+    ok = bool(state["logged_in"])
+    error_message = "Status check failed: Session expired - please re-login with: xianyu login"
+    lines = [
+        f"ok: {str(ok).lower()}",
+        "schema_version: '1'",
+        "state:",
+    ]
+    for key, value in state.items():
+        lines.append(f"  {key}: {_format_yaml_scalar(value)}")
+
+    if not ok:
+        lines.extend(
+            [
+                "error:",
+                "  code: not_authenticated",
+                f"  message: '{error_message}'",
+            ]
+        )
+    return "\n".join(lines)
+
+
+def _format_yaml_scalar(value: object) -> str:
+    if isinstance(value, bool):
+        return str(value).lower()
+    if isinstance(value, int):
+        return str(value)
+    if value is None:
+        return "null"
+    return "'" + str(value).replace("'", "''") + "'"
 
 
 def run_logout(args: argparse.Namespace) -> int:
