@@ -56,6 +56,8 @@ xianyu login --storage-state ./state.json  # 保存到自定义路径
 # ─── 搜索 ─────────────────────────────────────────
 xianyu search "iPhone 15"                  # 基础搜索
 xianyu search "显卡" --pages 2             # 分页
+xianyu search "显卡" --page 3              # 只从第 3 页开始抓取
+xianyu search "显卡" --page 3 --pages 2    # 从第 3 页开始连续抓 2 页
 xianyu search --keyword 显卡 --keyword 相机
 xianyu search --keyword-file keywords.txt
 
@@ -118,6 +120,16 @@ xianyu search --keyword 显卡 --keyword 机械键盘 --keyword 相机
 xianyu search --keyword-file keywords.txt
 ```
 
+分页：
+
+```bash
+xianyu search "显卡" --pages 2
+xianyu search "显卡" --page 3
+xianyu search "显卡" --page 3 --pages 2
+```
+
+`--page` 表示起始页，`--pages` 表示从起始页开始连续抓取多少页。
+
 结构化输出：
 
 ```bash
@@ -135,7 +147,8 @@ xianyu search "显卡" --json --output raw.json
 
 ## 常用参数
 
-- `--pages`：每个关键词抓取页数
+- `--page`：起始页，默认为 `1`
+- `--pages`：从起始页开始，每个关键词连续抓取页数
 - `--sort`：`default` 或 `latest`
 - `--format`：`table`、`json`、`ndjson`、`csv`
 - `--json`：输出抓到的原始接口响应

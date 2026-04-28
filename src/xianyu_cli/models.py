@@ -23,6 +23,7 @@ class SearchItem:
 @dataclass(slots=True)
 class SearchOptions:
     keywords: list[str]
+    page: int
     pages: int
     sort: str
     headless: bool

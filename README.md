@@ -56,6 +56,8 @@ xianyu login --storage-state ./state.json # Save to a custom path
 # ─── Search ───────────────────────────────────────
 xianyu search "iPhone 15"                 # Basic search
 xianyu search "显卡" --pages 2            # Pagination
+xianyu search "显卡" --page 3             # Fetch starting from page 3
+xianyu search "显卡" --page 3 --pages 2   # Fetch 2 pages starting from page 3
 xianyu search --keyword 显卡 --keyword 相机
 xianyu search --keyword-file keywords.txt
 
@@ -118,6 +120,16 @@ xianyu search --keyword 显卡 --keyword 机械键盘 --keyword 相机
 xianyu search --keyword-file keywords.txt
 ```
 
+Pagination:
+
+```bash
+xianyu search "显卡" --pages 2
+xianyu search "显卡" --page 3
+xianyu search "显卡" --page 3 --pages 2
+```
+
+`--page` is the starting page. `--pages` is the number of consecutive pages to fetch from that starting page.
+
 Structured output:
 
 ```bash
@@ -135,7 +147,8 @@ xianyu search "显卡" --json --output raw.json
 
 ## Common Options
 
-- `--pages` — pages to fetch per keyword
+- `--page` — starting page, defaults to `1`
+- `--pages` — consecutive pages to fetch per keyword from the starting page
 - `--sort` — `default` or `latest`
 - `--format` — `table`, `json`, `ndjson`, `csv`
 - `--json` — output raw captured API payloads

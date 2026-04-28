@@ -129,14 +129,28 @@ async def scrape_keyword(keyword: str, options: SearchOptions) -> SearchRunResul
             await _apply_sort(page, options.sort)
 
             current_page = 1
-            while current_page < options.pages:
+            while current_page < options.page:
+                next_button = page.locator(
+                    "[class*='search-pagination-arrow-right']:not([disabled])"
+                )
+                if await next_button.count() == 0:
+                    break
+                if current_page + 1 == options.page:
+                    captured.clear()
+                    raw_payloads.clear()
+                await next_button.click()
+                current_page += 1
+                await asyncio.sleep(options.min_wait_ms / 1000)
+
+            fetched_pages = 1
+            while fetched_pages < options.pages:
                 next_button = page.locator(
                     "[class*='search-pagination-arrow-right']:not([disabled])"
                 )
                 if await next_button.count() == 0:
                     break
                 await next_button.click()
-                current_page += 1
+                fetched_pages += 1
                 await asyncio.sleep(options.min_wait_ms / 1000)
 
             await asyncio.sleep(options.min_wait_ms / 1000)

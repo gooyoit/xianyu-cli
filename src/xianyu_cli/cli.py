@@ -22,6 +22,7 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_argument("-k", "--keyword", action="append", default=[], help="Repeatable keyword")
     search.add_argument("--keyword-file", help="Read one keyword per line")
     search.add_argument("--pages", type=int, default=1, help="Maximum pages per keyword")
+    search.add_argument("--page", type=int, default=1, help="Start page number")
     search.add_argument(
         "--sort",
         choices=["default", "latest"],
@@ -107,6 +108,8 @@ def parse_options(args: argparse.Namespace) -> SearchOptions:
         raise SystemExit("至少要提供一个关键词，可以用位置参数、--keyword 或 --keyword-file。")
     if args.pages < 1:
         raise SystemExit("--pages 必须 >= 1")
+    if args.page < 1:
+        raise SystemExit("--page 必须 >= 1")
     if args.min_wait_ms < 0:
         raise SystemExit("--min-wait-ms 必须 >= 0")
     if args.navigation_timeout_ms < 1:
@@ -121,6 +124,7 @@ def parse_options(args: argparse.Namespace) -> SearchOptions:
 
     return SearchOptions(
         keywords=keywords,
+        page=args.page,
         pages=args.pages,
         sort=args.sort,
         headless=not args.headful,

@@ -17,6 +17,7 @@ def test_parse_options_supports_multiple_keyword_sources(tmp_path) -> None:
         keywords=["手机"],
         keyword=["平板"],
         keyword_file=str(keyword_file),
+        page=1,
         pages=2,
         sort="latest",
         headful=False,
@@ -37,11 +38,12 @@ def test_parse_options_supports_multiple_keyword_sources(tmp_path) -> None:
 
 
 def test_main_dry_run_prints_options(capsys: pytest.CaptureFixture[str]) -> None:
-    code = main(["search", "显卡", "--dry-run", "--format", "json"])
+    code = main(["search", "显卡", "--page", "2", "--dry-run", "--format", "json"])
     assert code == 0
     output = json.loads(capsys.readouterr().out)
     assert output["keywords"] == ["显卡"]
     assert output["output_format"] == "json"
+    assert output["page"] == 2
 
 
 def test_main_json_prints_raw_payloads(
@@ -114,6 +116,7 @@ def test_parse_options_uses_default_storage_state(
         keywords=["手机"],
         keyword=[],
         keyword_file=None,
+        page=1,
         pages=1,
         sort="latest",
         headful=False,
