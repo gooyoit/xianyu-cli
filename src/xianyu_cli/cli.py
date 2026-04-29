@@ -13,6 +13,17 @@ from .models import SearchOptions
 from .scraper import scrape_all
 
 
+def configure_output_encoding() -> None:
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(errors="replace")
+        except (AttributeError, OSError, ValueError):
+            continue
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="xianyu", description="Xianyu CLI search tool")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -266,6 +277,7 @@ async def run_search(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    configure_output_encoding()
     parser = build_parser()
     args = parser.parse_args(argv)
     handler = args.handler

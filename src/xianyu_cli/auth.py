@@ -109,6 +109,14 @@ def has_login_markers(cookies: list[dict[str, object]]) -> bool:
     return any(_is_login_cookie(cookie) for cookie in relevant)
 
 
+def _should_save_browser_login(
+    cookies: list[dict[str, object]],
+    *,
+    enter_pressed: bool,
+) -> bool:
+    return enter_pressed or has_login_markers(cookies)
+
+
 def _stdin_enter_pressed() -> bool:
     if not sys.stdin or sys.stdin.closed or not sys.stdin.isatty():
         return False
@@ -305,7 +313,7 @@ async def login_with_browser(
         if auto_detect:
             print("检测到登录态后会自动保存，也可以回到终端按回车立即保存。")
         else:
-            print("登录完成后回到终端按回车保存。")
+            print("登录态出现后会自动保存，也可以回到终端按回车立即保存。")
 
         deadline = time.time() + timeout_seconds
         while True:
@@ -313,16 +321,21 @@ async def login_with_browser(
                 raise TimeoutError(f"登录等待超时，超过 {timeout_seconds} 秒。")
 
             cookies = await context.cookies([QR_LOGIN_URL, login_url])
-            if auto_detect and has_login_markers(cookies):
-                print("检测到登录态，正在保存。")
-                break
-
+            enter_pressed = False
             try:
-                if _stdin_enter_pressed():
-                    print("收到手工确认，正在保存。")
-                    break
+                enter_pressed = _stdin_enter_pressed()
             except (OSError, ValueError):
                 pass
+
+            if _should_save_browser_login(
+                cookies,
+                enter_pressed=enter_pressed,
+            ):
+                if has_login_markers(cookies):
+                    print("检测到登录态，正在保存。")
+                elif enter_pressed:
+                    print("收到手工确认，正在保存。")
+                break
 
             await asyncio.sleep(1)
 

@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+import sys
 from argparse import Namespace
+from io import BytesIO, TextIOWrapper
 
 import pytest
 
 from xianyu_cli.cli import main, parse_options
-from xianyu_cli.models import SearchRunResult
+from xianyu_cli.models import SearchItem, SearchRunResult
 
 
 def test_parse_options_supports_multiple_keyword_sources(tmp_path) -> None:
@@ -65,6 +67,40 @@ def test_main_json_prints_raw_payloads(
     output = json.loads(capsys.readouterr().out)
     assert output["keywords"] == ["显卡"]
     assert output["responses"][0]["payloads"][0]["data"]["resultList"][0]["id"] == "1"
+
+
+def test_main_replaces_unencodable_console_output(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    async def fake_scrape_all(_options):
+        return [
+            SearchRunResult(
+                keyword="显卡",
+                items=[
+                    SearchItem(
+                        keyword="显卡",
+                        title="测试",
+                        price="\xa5100",
+                        area="上海",
+                        seller="卖家",
+                        link="https://example.com",
+                        image_url="",
+                        publish_time="",
+                        item_id="1",
+                    )
+                ],
+                raw_payloads=[],
+            )
+        ]
+
+    output = TextIOWrapper(BytesIO(), encoding="gbk", errors="strict")
+    monkeypatch.setattr(sys, "stdout", output)
+    monkeypatch.setattr("xianyu_cli.cli.scrape_all", fake_scrape_all)
+
+    code = main(["search", "显卡"])
+    output.flush()
+
+    assert code == 0
 
 
 def test_login_qrcode_uses_terminal_qr_flow(

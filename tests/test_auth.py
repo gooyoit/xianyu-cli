@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from xianyu_cli.auth import _extract_qr_code_content, _extract_qr_status, has_login_markers
+from xianyu_cli.auth import (
+    _extract_qr_code_content,
+    _extract_qr_status,
+    _should_save_browser_login,
+    has_login_markers,
+)
 
 
 def test_has_login_markers_accepts_auth_cookie_name() -> None:
@@ -25,6 +30,27 @@ def test_has_login_markers_rejects_non_goofish_cookies() -> None:
         {"name": "a", "value": "1", "domain": ".example.com"},
     ]
     assert has_login_markers(cookies) is False
+
+
+def test_should_save_browser_login_after_auth_cookie_detected() -> None:
+    cookies = [
+        {"name": "unb", "value": "x", "domain": ".goofish.com"},
+    ]
+    assert _should_save_browser_login(cookies, enter_pressed=False) is True
+
+
+def test_should_save_browser_login_after_manual_confirm() -> None:
+    cookies = [
+        {"name": "foo", "value": "x", "domain": ".goofish.com"},
+    ]
+    assert _should_save_browser_login(cookies, enter_pressed=True) is True
+
+
+def test_should_not_save_browser_login_without_signal() -> None:
+    cookies = [
+        {"name": "foo", "value": "x", "domain": ".goofish.com"},
+    ]
+    assert _should_save_browser_login(cookies, enter_pressed=False) is False
 
 
 def test_extract_qr_code_content_reads_generate_payload() -> None:
