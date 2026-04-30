@@ -7,7 +7,7 @@ from io import BytesIO, TextIOWrapper
 
 import pytest
 
-from xianyu_cli.cli import main, parse_options
+from xianyu_cli.cli import configure_output_encoding, main, parse_options
 from xianyu_cli.models import SearchItem, SearchRunResult
 
 
@@ -37,6 +37,25 @@ def test_parse_options_supports_multiple_keyword_sources(tmp_path) -> None:
 
     options = parse_options(args)
     assert options.keywords == ["手机", "平板", "相机", "耳机"]
+
+
+def test_configure_output_encoding_forces_utf8(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeStream:
+        def __init__(self) -> None:
+            self.calls = []
+
+        def reconfigure(self, **kwargs) -> None:
+            self.calls.append(kwargs)
+
+    stdout = FakeStream()
+    stderr = FakeStream()
+    monkeypatch.setattr(sys, "stdout", stdout)
+    monkeypatch.setattr(sys, "stderr", stderr)
+
+    configure_output_encoding()
+
+    assert stdout.calls == [{"encoding": "utf-8", "errors": "replace"}]
+    assert stderr.calls == [{"encoding": "utf-8", "errors": "replace"}]
 
 
 def test_main_dry_run_prints_options(capsys: pytest.CaptureFixture[str]) -> None:

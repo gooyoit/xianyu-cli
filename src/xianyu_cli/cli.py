@@ -19,7 +19,7 @@ def configure_output_encoding() -> None:
         if reconfigure is None:
             continue
         try:
-            reconfigure(errors="replace")
+            reconfigure(encoding="utf-8", errors="replace")
         except (AttributeError, OSError, ValueError):
             continue
 
