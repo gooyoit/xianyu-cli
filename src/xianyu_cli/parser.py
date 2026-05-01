@@ -38,7 +38,9 @@ def normalize_price(price_parts: Any) -> str:
     return text
 
 
-def normalize_link(raw_link: str) -> str:
+def normalize_link(raw_link: str, item_id: str = "") -> str:
+    if item_id:
+        return f"https://h5.m.goofish.com/item?id={item_id}"
     if not raw_link:
         return ""
     return raw_link.replace("fleamarket://", "https://www.goofish.com/")
@@ -85,7 +87,8 @@ def parse_search_api_payload(payload: dict[str, Any], keyword: str) -> list[Sear
                 area=safe_get(main_data, "area", default="地区未知"),
                 seller=safe_get(main_data, "userNickName", default="匿名卖家"),
                 link=normalize_link(
-                    safe_get(item, "data", "item", "main", "targetUrl", default="")
+                    safe_get(item, "data", "item", "main", "targetUrl", default=""),
+                    item_id=item_id,
                 ),
                 image_url=normalize_image_url(
                     safe_get(main_data, "picUrl", default="")

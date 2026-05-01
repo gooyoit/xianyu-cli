@@ -18,7 +18,7 @@ def test_parse_search_api_payload_maps_reference_shape() -> None:
 
     assert len(items) == 2
     assert items[0].title == "MacBook Pro 14"
-    assert items[0].link == "https://www.goofish.com/item?id=123456&foo=bar"
+    assert items[0].link == "https://h5.m.goofish.com/item?id=123456"
     assert items[0].image_url == "https://img.alicdn.com/example.jpg"
     assert items[1].price == "¥12000"
     assert items[1].item_id == "654321"
